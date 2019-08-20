@@ -1,5 +1,5 @@
 lite-domain-list
-=============================
+================
 
 Lite domain list, based on [v2ray/domain-list-community](https://github.com/v2ray/domain-list-community).
 
@@ -14,5 +14,6 @@ Todo
 - [ ] Generate each `regex`
 - [ ] Generate each `full`
 - [X] Build `dnsmasq` format rules
+- [ ] Build other format rules
 
 And more...

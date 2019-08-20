@@ -10,17 +10,16 @@ def list_buildable():
     if not os.path.exists(DATA_LOCATION):
         sys.exit(f'Error: domain-list-community does not exists, try:\n',
                  f'    git submodule init\n',
-                 f'    git submodule update')
+                 f'    git submodule update --recursive --remote')
 
     data_list = os.listdir(DATA_LOCATION)
     for index, data in enumerate(data_list, start=1):
-        if (index % 4) == 0 or index == len(data_list):
-            print(f'{data:20s}')
-            continue
         print(f'{data:20s}', end='')
+        if (index % 4) == 0 or index == len(data_list):
+            print()
 
 
-def build_target(target: str, server: str):
+def build(target: str, server: str):
     lines = load(target)
     replace_include(lines)
     rules = build_dnsmasq(lines, server)
@@ -52,14 +51,13 @@ def remove_comment(lines: list) -> list:
 
 
 def replace_include(lines: list):
-    list_data = lines
     while 1:
         has_include = False
-        for index, line in enumerate(list_data):
+        for index, line in enumerate(lines):
             if 'include:' in line:
                 target = line[8:]
-                del list_data[index]
-                list_data.extend(load(target))
+                del lines[index]
+                lines.extend(load(target))
                 has_include = True
 
         if not has_include:
@@ -81,7 +79,7 @@ if __name__ == '__main__':
                         metavar='TARGET',
                         nargs='?',
                         default='cn',
-                        help='target list to build (default: cn)')
+                        help='target domain-list to build (default: cn)')
     parser.add_argument('-l', '--list',
                         action='store_true',
                         help='list all buildable lists')
@@ -96,4 +94,4 @@ if __name__ == '__main__':
         list_buildable()
         sys.exit()
 
-    build_target(options.target, options.server[0])
+    build(options.target, options.server[0])
