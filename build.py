@@ -4,6 +4,7 @@ import sys
 import argparse
 
 DATA_LOCATION = './domain-list-community/data'
+DNSMASQ_LOCATION = './dnsmasq/'
 
 
 def list_buildable():
@@ -21,10 +22,9 @@ def list_buildable():
 
 def build(target: str, server: str):
     lines = load(target)
-    replace_include(lines)
-    rules = build_dnsmasq(lines, server)
-    for line in rules:
-        print(line)
+    data = replace_include(lines)
+    build_dnsmasq(data, server, target)
+    print(f'Info: Build Successful')
 
 
 def load(target: str) -> list:
@@ -34,11 +34,8 @@ def load(target: str) -> list:
     with open(DATA_LOCATION + '/' + target, 'r') as f:
         lines = list(f)
 
-    return remove_comment(lines)
-
-
-def remove_comment(lines: list) -> list:
     data = []
+
     for line in lines:
         index = line.find('#')
         if index != -1:
@@ -47,30 +44,40 @@ def remove_comment(lines: list) -> list:
         if len(line) == 0:
             continue
         data.append(line)
+
     return data
 
 
-def replace_include(lines: list):
-    while 1:
+def replace_include(lines: list) -> list:
+    while True:
+        tmp_data = []
         has_include = False
-        for index, line in enumerate(lines):
+        for line in lines:
             if 'include:' in line:
-                target = line[8:]
-                del lines[index]
-                lines.extend(load(target))
                 has_include = True
+                target = line[8:]
+                tmp_data.extend(load(target))
+            else:
+                tmp_data.append(line)
+
+        lines = tmp_data
 
         if not has_include:
-            break
+            return lines
 
 
-def build_dnsmasq(lines: list, server: str) -> list:
+def build_dnsmasq(lines: list, server: str, target: str):
+    DNSMASQ_FILENAME = target + '.conf'
     rules = []
     for line in lines:
         if '@' in line:
             continue
-        rules.append('server=/' + line + '/' + server)
-    return rules
+        if ':' in line:
+            continue
+        rules.append('server=/' + line + '/' + server + '\n')
+
+    with open(DNSMASQ_LOCATION + DNSMASQ_FILENAME, 'w') as f:
+        f.writelines(rules)
 
 
 if __name__ == '__main__':
@@ -82,7 +89,7 @@ if __name__ == '__main__':
                         help='target domain-list to build (default: cn)')
     parser.add_argument('-l', '--list',
                         action='store_true',
-                        help='list all buildable lists')
+                        help='list all buildable domain-lists')
     parser.add_argument('-s', '--server',
                         metavar='SERVER',
                         nargs=1,
