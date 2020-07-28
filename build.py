@@ -9,9 +9,9 @@ DNSMASQ_LOCATION = './dnsmasq/'
 
 def list_buildable():
     if not os.path.exists(DATA_LOCATION):
-        sys.exit(f'Error: domain-list-community does not exists, try:\n',
-                 f'    git submodule init\n',
-                 f'    git submodule update --recursive --remote')
+        sys.exit('Error: domain-list-community does not exists, try:\n'
+                 '    git submodule init\n'
+                 '    git submodule update --recursive --remote')
 
     data_list = os.listdir(DATA_LOCATION)
     for index, data in enumerate(data_list, start=1):
@@ -24,7 +24,7 @@ def build(target: str, server: str):
     lines = load(target)
     data = replace_include(lines)
     build_dnsmasq(data, server, target)
-    print(f'Info: Build Successful')
+    print('Info: Build Successful')
 
 
 def load(target: str) -> list:
@@ -97,7 +97,7 @@ if __name__ == '__main__':
                         help='public dns server (default: 223.5.5.5)')
     options = parser.parse_args()
 
-    if options.list == True:
+    if options.list is True:
         list_buildable()
         sys.exit()
 

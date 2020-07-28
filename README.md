@@ -1,7 +1,7 @@
 lite-domain-list
 ================
 
-Lite domain list, based on [v2ray/domain-list-community](https://github.com/v2ray/domain-list-community).
+Lite domain list, based on [v2fly/domain-list-community](https://github.com/v2fly/domain-list-community).
 
 
 Todo
