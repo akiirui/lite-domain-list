@@ -1,26 +1,24 @@
-lite-domain-list
-================
+# lite-domain-list
 
 Lite domain list, based on [v2fly/domain-list-community](https://github.com/v2fly/domain-list-community).
 
-
-Todo
-----
+## Todo
 
 Output:
-- [X] Output `dnsmasq` rules
+
+- [x] Output `dnsmasq` rules
 - [ ] And more...
 
 Data parse:
-- [X] Remove all comments & empty lines
-- [X] Replace `include:`
+
+- [x] Remove all comments & empty lines
+- [x] Replace `include:`
 - [ ] Generate each `domain:`
 - [ ] Generate each `keyword:`
 - [ ] Generate each `regex:`
 - [ ] Generate each `full:`
 
-Usage
------
+## Usage
 
 ```
 usage: build.py [-h] [-l] [-s SERVER] [TARGET]
